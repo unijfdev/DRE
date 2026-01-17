@@ -1,0 +1,29 @@
+FROM docker.io/php:7.4-fpm-buster
+
+RUN echo 'deb http://archive.debian.org/debian buster main' > /etc/apt/sources.list && \
+    echo 'deb http://archive.debian.org/debian-security buster/updates main' >> /etc/apt/sources.list && \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99-no-check && \
+    apt-get update -o Acquire::AllowInsecureRepositories=true && \
+    apt-get install -y --allow-unauthenticated debian-archive-keyring && \
+    apt-get update && \
+    apt-get install -y \
+        curl \
+        vim \
+        net-tools \
+        libpq-dev \
+        postgresql-client \
+        libzip-dev \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        zlib1g-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install pdo_pgsql pgsql zip gd && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
+
+WORKDIR "/var/www"
