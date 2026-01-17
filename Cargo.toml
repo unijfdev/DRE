@@ -1,6 +1,17 @@
 [package]
-name = "setup"
-version = "0.1.0"
+name = "dre"
+version = "0.0.1"
+description = "Dev Rat Environment"
+license = "MIT"
 edition = "2024"
 
 [dependencies]
+ratatui = "0.30.0"
+crossterm = "0.29.0"
+color-eyre = "0.6.3"
+clap = { version = "4.5.41", features = ["derive"] }
+arboard = "3.6.0"
+
+[[bin]]
+name = "dre"
+path = "src/main.rs"
